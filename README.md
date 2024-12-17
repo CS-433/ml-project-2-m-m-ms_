@@ -120,8 +120,8 @@ ML4Science/
 
 1. **Clone** the repository:
    ```bash
-   git clone https://github.com/your-username/ML4Science.git
-   cd ML4Science
+   git clone https://github.com/CS-433/ml-project-2-m-m-ms_.git 
+   cd ml-project-2-m-m-ms_
 2. **Create** a dedicated python environnement : 
     ```bash 
         conda create -n denoising_project
@@ -145,6 +145,8 @@ ML4Science/
 ### For Deep Learning Denoisers:
 
 #### **Noise2Noise**:
+**Note:** The weights of the trained model are provided in the directory `/Noise2Noise/exps/Noise2Noise/checkpoints/checkpoint.pth`.
+
 1. **To train the model**:
    - Convert the dataset to `.h5` format using `convert_dataset_to_h5.py`.
    - Edit `config.json` to update training parameters.
@@ -152,10 +154,11 @@ ML4Science/
      ```bash
      python train.py -d [device]
      ```
-   - Launch TensorBoard to monitor the training process (see [Running TensorBoard](#running-tensorboard)).
-   - After training, a `checkpoints.pth` file with the model weights is generated.
+   - Launch TensorBoard to monitor the training process (see Running TensorBoard).
+   - After training, a `checkpoint.pth` file with the model weights is generated.
+
 2. **To evaluate the model**:
-   - Run `run.py` or `run.ipynb` with `denoiser_name = 'Noise2Noise'`.
+   - Run run.py or run.ipynb with `denoiser_name = 'Noise2Noise'`.
 
 #### **Noise2Void**:
 1. **To train and evaluate the model**:
@@ -197,10 +200,12 @@ The results are stored in the `data/output/` directory and include:
 - Visualizations of denoised images for qualitative comparison.  
 
 ### **Metrics Used:**
-- **PSNR (Peak Signal-to-Noise Ratio)**: Measures the quality of denoised images.  
-- **SSIM (Structural Similarity Index)**: Evaluates the structural fidelity.  
+- **PSNR (Peak Signal-to-Noise Ratio)**: Measures the quality of denoised images.
+- **SI-PSNR (Scale Invariant Signal-to-Noise Ratio)**: Evaluates the quality of denoised images while being invariant to scale.
+- **SSIM (Structural Similarity Index)**: Evaluates the structural fidelity.
+- **Runtime**: Amount of time to denoise an image.
 
-Explore the results using the `explorations.ipynb` notebook in the `scripts/` folder.  
+Visualize the denoised images using the `explorations.ipynb` notebook in the `scripts/` folder.
 
 ---
 

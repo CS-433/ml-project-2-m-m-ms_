@@ -69,7 +69,7 @@ def display_styled_results(df, output_path, output_file, title):
         'PSNR': "{:.2f}",
         'SI-PSNR': "{:.2f}",
         'SSIM': "{:.4f}", 
-        'TotalRuntime': "{:.2f}"
+        'Runtime': "{:.2f}"
     }).background_gradient(subset=['PSNR', 'SI-PSNR', 'SSIM', 'TotalRuntime'])
 
     # Display styled DataFrame
