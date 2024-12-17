@@ -1,6 +1,6 @@
 # ML4Science: Image Denoising Project
 
-This project focuses on improving image quality by reducing noise using state-of-the-art denoising techniques and models. The repository includes scripts for training and evaluating models, datasets (both raw and processed), and results of denoised images using various algorithms
+This project focuses on improving image quality by reducing noise using state-of-the-art denoising techniques and models. The repository includes scripts for training and evaluating models, dataset (of denoised images), and metrics results of denoised images using various algorithms
 
 ---
 
@@ -10,7 +10,7 @@ This project focuses on improving image quality by reducing noise using state-of
 - [Features](#features)
 - [Project Structure](#project-structure)
 - [Getting Started](#getting-started)
-- [Usage](#usage)
+- [Usage](#usage-:-instructions-for-running-the-denoisers)
 - [Denoising Techniques](#denoising-techniques)
 - [Results and Metrics](#results-and-metrics)
 - [Running TensorBoard](#running-tensorboard)
@@ -104,7 +104,8 @@ ML4Science/
 ├── run.py                  # Script to run the project
 ├── requirements.txt        # Project dependencies
 ├── LICENSE.txt             # Project license
-├── .gitignore 
+├── .gitignore
+├── .gitattributes
 └── README.md               # Project description and instructions
 ```
 ---
@@ -137,7 +138,7 @@ ML4Science/
 
 ### For Non-Deep Learning Denoisers:
 1. Run the Python script `run.py` or the Jupyter notebook `run.ipynb`.
-2. Specify the `denoiser_name` parameter to select a denoising method.
+2. Specify the `denoiser_name` to select a denoising method and its tunable values in `PARAMETER_RANGES` .
 3. After denoising is complete:
    - A `.csv` file containing metrics is saved in `data/output/<denoiser_name>/`.
    - The denoised images are stored in `data/processed/<denoiser_name>/`.
@@ -149,7 +150,7 @@ ML4Science/
 
 1. **To train the model**:
    - Convert the dataset to `.h5` format using `convert_dataset_to_h5.py`.
-   - Edit `config.json` to update training parameters.
+   - Edit `config.json` to modify the training parameters.
    - Train the model with:
      ```bash
      python train.py -d [device]
@@ -204,6 +205,8 @@ The results are stored in the `data/output/` directory and include:
 - **SI-PSNR (Scale Invariant Signal-to-Noise Ratio)**: Evaluates the quality of denoised images while being invariant to scale.
 - **SSIM (Structural Similarity Index)**: Evaluates the structural fidelity.
 - **Runtime**: Amount of time to denoise an image.
+
+The denoised images for each denoiser are stored in the `data/processed/denoiser_name` directory. 
 
 Visualize the denoised images using the `explorations.ipynb` notebook in the `scripts/` folder.
 
