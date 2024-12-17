@@ -1,0 +1,13 @@
+torch
+numpy
+scipy
+scikit-image
+pandas
+tqdm
+bm3d
+ipython
+careamics
+tensorboard 
+opencv-python
+h5py
+matplotlib

@@ -1,0 +1,20 @@
+{
+    "exp_name": "Noise2Noise",
+    "log_dir": "exps",
+    "net_params": {
+        "depth": 3,
+        "nb_channels": 64
+    },
+    "training_options": {
+        "batch_size": 16,
+        "color": false,
+        "data_augmentation": true,
+        "gamma_scheduler": 0.5,
+        "lr": 0.0001,
+        "lr_decay_step": 10000,
+        "num_workers": 4,
+        "patch_size": 128,
+        "testing_step": 10000,
+        "total_steps": 100000
+    }
+}
