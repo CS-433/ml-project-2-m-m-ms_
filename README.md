@@ -10,7 +10,7 @@ This project focuses on improving image quality by reducing noise using state-of
 - [Features](#features)
 - [Project Structure](#project-structure)
 - [Getting Started](#getting-started)
-- [Usage](#usage-:-instructions-for-running-the-denoisers)
+- [Usage](#usage:-instructions-for-running-the-denoisers)
 - [Denoising Techniques](#denoising-techniques)
 - [Results and Metrics](#results-and-metrics)
 - [Running TensorBoard](#running-tensorboard)
