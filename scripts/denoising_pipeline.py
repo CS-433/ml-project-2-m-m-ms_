@@ -3,6 +3,7 @@ import cv2
 import pandas as pd
 from tqdm import tqdm
 import logging as log
+import time
 
 from scripts.helpers import *
 from models.prox_tv_iso import *
@@ -57,7 +58,7 @@ def load_and_prepare_images(data_path, channel, image_index):
     """Load and prepare images for denoising."""
     
     # Construct the image path
-    image_path = f'/Image{image_index}/wf_channel{channel}.npy'
+    image_path = f'Image{image_index}/wf_channel{channel}.npy'
     
     # Load the image
     image = load_image(data_path, image_path)
@@ -74,7 +75,7 @@ def load_and_prepare_images(data_path, channel, image_index):
 
 
 def denoise_images(denoiser, denoiser_name, param_config, noisy_image, ground_truth_img, image_index, channel, disable_progress, output_path):
-    """Denoise images using the given denoiser and parameter configuration."""
+    '''Denoise images using the given denoiser and parameter configuration.'''
     
     results = []
     
@@ -83,18 +84,23 @@ def denoise_images(denoiser, denoiser_name, param_config, noisy_image, ground_tr
         param_name = param_config["param_name"]
         for value in tqdm(param_config["values"], disable=disable_progress):
             denoiser_params = {param_name: value}
+            start_time = time.time()  
             denoised_image = apply_denoiser(denoiser, denoiser_name, denoiser_params, noisy_image)
-            results.append([image_index, f"{channel}", *compute_metrics(denoised_image, ground_truth_img), denoiser_name, value])
+            end_time = time.time()  
+            runtime = end_time - start_time 
+            results.append([image_index, f"{channel}", *compute_metrics(denoised_image, ground_truth_img), denoiser_name, value, runtime])
             
             # Save the denoised image for channel 0 and image 001
             if channel == 0 and image_index == '001':
                 save_denoised_image(denoised_image, output_path, denoiser_name, channel, image_index, value)
-    
     # If no parameter values are provided, apply the denoiser without parameters
     else:
         denoiser_params = {}
+        start_time = time.time()
         denoised_image = apply_denoiser(denoiser, denoiser_name, denoiser_params, noisy_image)
-        results.append([image_index, f"{channel}", *compute_metrics(denoised_image, ground_truth_img), denoiser_name, denoiser_params])
+        end_time = time.time()  
+        runtime = end_time - start_time 
+        results.append([image_index, f"{channel}", *compute_metrics(denoised_image, ground_truth_img), denoiser_name, denoiser_params, runtime])
         
         # Save the denoised image for channel 0 and image 001
         if channel == 0 and image_index == '001':
@@ -150,37 +156,42 @@ def save_denoised_image(denoised_image, output_path, denoiser_name, channel, ima
     np.save(denoised_image_path, denoised_image)
     log.info(f"Denoised image saved to {denoised_image_path}")
 
-
+    
 def save_results_to_csv(results, output_path, denoiser_name, channel):
-    """Save denoising results to a CSV file."""
+    '''Save denoising results to a CSV file.'''
     
     # Create the denoiser-specific folder if it doesn't exist
     denoiser_folder = os.path.join(output_path, denoiser_name)
     os.makedirs(denoiser_folder, exist_ok=True)
-    
+        
     # Save results to CSV
-    results_df = pd.DataFrame(results, columns=['ImageIndex', 'Channel', 'PSNR', 'SI-PSNR', 'SSIM', 'DenoiserType', 'Parameter'])
-    results_df = results_df[['DenoiserType', 'Parameter', 'ImageIndex', 'Channel', 'PSNR', 'SI-PSNR', 'SSIM']]
+    results_df = pd.DataFrame(results, columns=['ImageIndex', 'Channel', 'PSNR', 'SI-PSNR', 'SSIM', 'DenoiserType', 'Parameter', 'Runtime'])
+    results_df = results_df[['DenoiserType', 'Parameter', 'ImageIndex', 'Channel', 'PSNR', 'SI-PSNR', 'SSIM', 'Runtime']]
     results_df.to_csv(os.path.join(denoiser_folder, f"{denoiser_name}_channel{channel}_denoiser_results.csv"), index=False)
 
-
+    
 def save_average_results_to_csv(all_results, output_path, denoiser_name):
-    """Save average denoising results to a CSV file."""
+    '''Save average denoising results to a CSV file.'''
     
     # Create the denoiser-specific folder if it doesn't exist
     denoiser_folder = os.path.join(output_path, denoiser_name)
     os.makedirs(denoiser_folder, exist_ok=True)
     
     # Save average results to CSV
-    all_results_df = pd.DataFrame(all_results, columns=['ImageIndex', 'Channel', 'PSNR', 'SI-PSNR', 'SSIM', 'DenoiserType', 'Parameter'])
-    all_results_df = all_results_df[['DenoiserType', 'Parameter', 'ImageIndex', 'Channel', 'PSNR', 'SI-PSNR', 'SSIM']]
+    all_results_df = pd.DataFrame(all_results, columns=['ImageIndex', 'Channel', 'PSNR', 'SI-PSNR', 'SSIM', 'DenoiserType', 'Parameter', 'Runtime'])
+    all_results_df = all_results_df[['DenoiserType', 'Parameter', 'ImageIndex', 'Channel', 'PSNR', 'SI-PSNR', 'SSIM', 'Runtime']]
     
+    # Check if the 'Parameter' column is empty
     if (all_results_df['Parameter'] == {}).all():
-        # If no parameter, perform groupby on 'DenoiserType' and 'Channel' only
-        all_results_df = all_results_df.groupby(['DenoiserType', 'Channel'], as_index=False)[['PSNR', 'SI-PSNR', 'SSIM']].mean().reset_index(drop=True)
+        total_runtime_df = all_results_df.groupby(['DenoiserType', 'Channel'])['Runtime'].sum()
+        all_results_df = all_results_df.groupby(['DenoiserType', 'Channel'])[['PSNR', 'SI-PSNR', 'SSIM']].mean().reset_index()
+        all_results_df = all_results_df.join(total_runtime_df, on=(['DenoiserType', 'Channel'])).rename(columns={'Runtime': 'TotalRuntime'})
     else:
-        # If parameter, perform groupby on 'DenoiserType', 'Parameter', and 'Channel'
-        all_results_df = all_results_df.groupby(['DenoiserType', 'Parameter', 'Channel'], as_index=False)[['PSNR', 'SI-PSNR', 'SSIM']].mean().reset_index(drop=True)
+        total_runtime_df = all_results_df.groupby(['DenoiserType', 'Channel'])['Runtime'].sum()
+        print(total_runtime_df)
+        all_results_df = all_results_df.groupby(['DenoiserType', 'Channel'])[['PSNR', 'SI-PSNR', 'SSIM']].mean().reset_index()
+        all_results_df = all_results_df.join(total_runtime_df, on=(['DenoiserType', 'Channel'])).rename(columns={'Runtime': 'TotalRuntime'})
+
     
     all_results_df.to_csv(os.path.join(denoiser_folder, f"avg_{denoiser_name}_denoiser_results.csv"), index=False)
     
@@ -212,7 +223,7 @@ def process_image(image, ax, title, inset_size):
 
     # Display the image
     ax.imshow(image_copy, cmap='viridis')
-    ax.set_title(title, fontsize=18)
+    ax.set_title(title, fontsize=15)
     ax.axis('off')
 
     # Add white border inset to the original and the copied region

@@ -22,7 +22,7 @@ def main():
     disable_progress = True  # Set to False to enable progress bar
 
     # Choose denoiser
-    denoiser_name = "Gaussian"  # "Gaussian", "Median", "TV-Chambolle", "Wavelet", "NL-Means", "TV-ISO", "BM3D", "Noise2Noise", "Noise2Void"
+    denoiser_name = "Median"  # "Gaussian", "Median", "TV-Chambolle", "Wavelet", "NL-Means", "TV-ISO", "BM3D", "Noise2Noise", "Noise2Void"
 
     # Run the denoising pipeline
     denoising_pipeline(data_path, output_path, denoiser_name, PARAMETER_RANGES, num_images=120, num_channels=3, disable_progress=disable_progress)
