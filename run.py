@@ -9,7 +9,7 @@ def main():
     # Define global parameter ranges
     PARAMETER_RANGES = {
         "Gaussian": {"param_name": "sigma", "values": [2]},
-        "Median": {"param_name": "size", "values": [5]},
+        "Median": {"param_name": "size", "values": [8]},
         "TV-Chambolle": {"param_name": "weight", "values": [0.1, 0.2, 0.3]},
         "Wavelet": {"param_name": None, "values": None},  # Use default parameters
         "NL-Means": {"param_name": None, "values": None},  # Use default parameters
