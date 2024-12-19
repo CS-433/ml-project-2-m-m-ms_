@@ -123,22 +123,22 @@ ML4Science/
    ```bash
    git clone https://github.com/CS-433/ml-project-2-m-m-ms_.git 
    cd ml-project-2-m-m-ms_
-2. **Create** a dedicated python environnement : 
+2. **Create** a dedicated python environnement: 
     ```bash 
         conda create -n denoising_project
         conda activate denoising_project
-3. **Install** the dependencies : 
+3. **Install** the dependencies: 
     ```bash 
     pip install -r requirements.txt
 
 4. **Download** the [dataset](https://datasets.epfl.ch/w2s/W2S_raw.zip) (40GB compressed, 70GB uncompressed) and extract it into `data/raw/` directory 
 
 ---
-## Usage : Instructions for Running the Denoisers
+## Usage: Instructions for Running the Denoisers
 
 ### For Non-Deep Learning Denoisers:
 1. Run the Python script `run.py` or the Jupyter notebook `run.ipynb`.
-2. Specify the `denoiser_name` to select a denoising method and its tunable values in `PARAMETER_RANGES` .
+2. Specify the `denoiser_name` to select a denoising method and its tunable values in `PARAMETER_RANGES`.
 3. After denoising is complete:
    - A `.csv` file containing metrics is saved in `data/output/<denoiser_name>/`.
    - The denoised images are stored in `data/processed/<denoiser_name>/`.
@@ -164,7 +164,7 @@ ML4Science/
 #### **Noise2Void**:
 1. **To train and evaluate the model**:
    - Use the Python script `train_n2v.py` or the Jupyter notebook `train_n2v.ipynb`.
-   - The results of the denoised images will appear after the training completes.
+   - The results of the denoised images will appear after the training is completed.
 2. **Note**: Training `Noise2Void` hasn't been tested properly due to difficulties encountered with [CAREAmics](https://careamics.github.io/0.1/) library.
 
 --- 
@@ -226,10 +226,12 @@ To monitor the training process for **Noise2Noise**:
     ```
 ---
 
+## Aknowledgements 
+
+We extend our heartfelt thanks to Daniel Sage, Stanislas Ducotterd, and Mehrsa Pourya for their guidance and support throughout this project.
+
+---
+
 ## License 
 
 This project is licensed under the MIT License. See the `LICENSE.txt` file for details.
-
-
-
-
